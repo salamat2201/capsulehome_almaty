@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CapsuleHome Almaty — Модульные и капсульные дома</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --dark: #0f1310;
+    --dark2: #1a1f1b;
+    --white: #f5f4f0;
+    --green: #3d7a52;
+    --green-light: #4e9966;
+    --green-pale: #e8f2ec;
+    --gray: #8a9490;
+    --border: rgba(255,255,255,0.08);
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--dark);
+    color: var(--white);
+    overflow-x: hidden;
+    font-weight: 300;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 60px;
+    background: linear-gradient(to bottom, rgba(15,19,16,0.95), transparent);
+    backdrop-filter: blur(2px);
+    transition: background 0.3s;
+  }
+  nav.scrolled { background: rgba(15,19,16,0.97); }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--green-light); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { color: rgba(245,244,240,0.7); text-decoration: none; font-size: 14px; letter-spacing: 0.04em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--green); color: var(--white);
+    padding: 10px 22px; border-radius: 2px;
+    font-size: 13px; font-weight: 500; letter-spacing: 0.05em;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--green-light); }
+  .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .burger span { display: block; width: 24px; height: 1.5px; background: var(--white); transition: all 0.3s; }
+
+  /* HERO */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: 
+      linear-gradient(105deg, rgba(15,19,16,0.92) 0%, rgba(15,19,16,0.65) 55%, rgba(15,19,16,0.4) 100%),
+      url('/images/caps.webp') center/cover no-repeat;
+  }
+  .hero-content {
+    position: relative; z-index: 1;
+    max-width: 700px; padding: 0 60px;
+    margin-top: 80px;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--green-light); margin-bottom: 28px;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-tag::before { content: ''; display: block; width: 28px; height: 1px; background: var(--green-light); }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 6vw, 76px);
+    font-weight: 300; line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero h1 em { font-style: normal; color: var(--green-light); }
+  .hero p {
+    font-size: clamp(15px, 1.8vw, 18px);
+    color: rgba(245,244,240,0.72);
+    line-height: 1.7; max-width: 520px;
+    margin-bottom: 44px;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-btns {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--green); color: var(--white);
+    padding: 16px 30px; border-radius: 2px;
+    font-size: 14px; font-weight: 500; letter-spacing: 0.04em;
+    text-decoration: none; transition: all 0.25s;
+    border: 1px solid var(--green);
+  }
+  .btn-primary:hover { background: var(--green-light); border-color: var(--green-light); transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--white);
+    padding: 16px 30px; border-radius: 2px;
+    font-size: 14px; font-weight: 400; letter-spacing: 0.04em;
+    text-decoration: none; transition: all 0.25s;
+    border: 1px solid rgba(245,244,240,0.25);
+  }
+  .btn-secondary:hover { border-color: var(--white); }
+  .wa-icon { font-size: 18px; }
+
+  .hero-scroll {
+    position: absolute; bottom: 48px; left: 60px; z-index: 1;
+    display: flex; align-items: center; gap: 12px;
+    color: rgba(245,244,240,0.4); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    opacity: 0; animation: fadeUp 0.8s 1.2s forwards;
+  }
+  .hero-scroll::after { content: ''; display: block; width: 40px; height: 1px; background: currentColor; }
+
+  /* SECTION BASE */
+  section { padding: 120px 60px; }
+  .section-tag {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--green-light); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-tag::before { content: ''; display: block; width: 20px; height: 1px; background: var(--green-light); }
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.5vw, 58px);
+    font-weight: 300; line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  /* WHY US */
+  .why { background: var(--dark2); }
+  .why-header { max-width: 560px; margin-bottom: 72px; }
+  .why-header p { margin-top: 20px; color: var(--gray); line-height: 1.7; font-size: 16px; }
+  .why-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  }
+  .why-card {
+    background: var(--dark); padding: 44px 36px;
+    transition: background 0.3s;
+  }
+  .why-card:hover { background: #161c17; }
+  .why-icon {
+    width: 48px; height: 48px; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(61,122,82,0.3);
+    color: var(--green-light); font-size: 20px;
+    border-radius: 2px;
+  }
+  .why-card h3 { font-size: 17px; font-weight: 500; margin-bottom: 10px; letter-spacing: 0.01em; }
+  .why-card p { font-size: 14px; color: var(--gray); line-height: 1.65; }
+
+  /* MODULAR */
+  .modular { background: var(--dark); }
+  .modular-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; flex-wrap: wrap; gap: 24px; }
+  .modular-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .model-card {
+    position: relative; overflow: hidden; background: var(--dark2);
+    cursor: pointer;
+  }
+  .model-img {
+    width: 100%; height: 340px; object-fit: cover;
+    filter: brightness(0.75) saturate(0.9);
+    transition: all 0.5s; display: block;
+    background: #1a2018 center/cover;
+  }
+  .model-card:hover .model-img { filter: brightness(0.85) saturate(1); transform: scale(1.03); }
+  .model-body { padding: 36px; }
+  .model-size {
+    font-family: var(--font-display); font-size: 52px; font-weight: 300;
+    line-height: 1; color: var(--white); margin-bottom: 4px;
+  }
+  .model-size span { font-size: 22px; color: var(--gray); }
+  .model-price {
+    font-size: 22px; font-weight: 500; color: var(--green-light);
+    margin-bottom: 24px;
+  }
+  .model-features { list-style: none; margin-bottom: 32px; }
+  .model-features li {
+    font-size: 14px; color: rgba(245,244,240,0.65);
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .model-features li::before { content: ''; width: 4px; height: 4px; background: var(--green-light); border-radius: 50%; flex-shrink: 0; }
+  .model-delivery { font-size: 12px; color: var(--gray); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 28px; }
+  .model-delivery span { color: var(--green-light); }
+
+  /* CAPSULE */
+  .capsule { background: var(--dark2); }
+  .capsule-header { margin-bottom: 60px; }
+  .capsule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .capsule-card {
+    position: relative; overflow: hidden;
+    background: var(--dark);
+  }
+  .capsule-img {
+    width: 100%; height: 420px; object-fit: cover;
+    filter: brightness(0.7);
+    transition: all 0.5s; display: block;
+    background: #111d14 center/cover;
+  }
+  .capsule-card:hover .capsule-img { filter: brightness(0.85); transform: scale(1.03); }
+  .capsule-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(10,15,11,0.97) 0%, transparent 100%);
+    padding: 48px 40px 40px;
+  }
+  .capsule-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green-light); margin-bottom: 8px; }
+  .capsule-name { font-family: var(--font-display); font-size: 42px; font-weight: 300; margin-bottom: 6px; }
+  .capsule-price { font-size: 24px; font-weight: 500; color: var(--green-light); margin-bottom: 4px; }
+  .capsule-desc { font-size: 13px; color: var(--gray); margin-bottom: 20px; }
+
+  /* CUSTOM */
+  .custom {
+    background: var(--dark);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    padding: 0;
+    min-height: 480px;
+    align-items: stretch;
+  }
+  .custom-img {
+    background: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80') center/cover;
+    min-height: 400px;
+    filter: brightness(0.6) saturate(0.8);
+  }
+  .custom-content {
+    padding: 100px 80px;
+    display: flex; flex-direction: column; justify-content: center;
+    background: var(--dark2);
+  }
+  .custom-content h2 { margin-bottom: 20px; }
+  .custom-content p { color: var(--gray); line-height: 1.8; font-size: 15px; margin-bottom: 40px; }
+
+  /* PROCESS */
+  .process { background: var(--dark); }
+  .process-header { max-width: 500px; margin-bottom: 72px; }
+  .steps {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
+    position: relative;
+  }
+  .step {
+    padding: 40px 28px; background: var(--dark2);
+    position: relative;
+  }
+  .step-num {
+    font-family: var(--font-display); font-size: 60px; font-weight: 300;
+    color: rgba(61,122,82,0.15); line-height: 1; margin-bottom: 20px;
+  }
+  .step h3 { font-size: 15px; font-weight: 500; margin-bottom: 10px; }
+  .step p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+  /* CONTACTS */
+  .contacts {
+    background: var(--dark2);
+    text-align: center; padding: 120px 60px;
+  }
+  .contacts h2 { margin-bottom: 20px; }
+  .contacts p { color: var(--gray); font-size: 16px; margin-bottom: 48px; max-width: 460px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+  .contacts-links { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; margin-top: 20px; }
+  .contact-item { display: flex; align-items: center; gap: 12px; color: var(--white); text-decoration: none; font-size: 15px; transition: color 0.2s; }
+  .contact-item:hover { color: var(--green-light); }
+  .contact-icon { width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); border-top: 1px solid var(--border);
+    padding: 32px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+  }
+  footer p { font-size: 13px; color: var(--gray); }
+  footer a { color: var(--gray); text-decoration: none; font-size: 13px; }
+
+  /* STICKY WA */
+  .sticky-wa {
+    position: fixed; bottom: 28px; right: 28px; z-index: 200;
+    background: #25D366; color: white;
+    width: 58px; height: 58px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; box-shadow: 0 4px 24px rgba(37,211,102,0.4);
+    text-decoration: none; transition: all 0.25s;
+    animation: pulse 2.5s infinite;
+  }
+  .sticky-wa:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(37,211,102,0.55); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 24px rgba(37,211,102,0.4); }
+    50% { box-shadow: 0 4px 36px rgba(37,211,102,0.65); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links, .nav-cta { display: none; }
+    .burger { display: flex; }
+    section { padding: 80px 24px; }
+    .hero-content { padding: 0 24px; }
+    .hero-scroll { left: 24px; }
+    .why-grid { grid-template-columns: 1fr; }
+    .modular-grid, .capsule-grid { grid-template-columns: 1fr; }
+    .custom { grid-template-columns: 1fr; }
+    .custom-img { min-height: 240px; }
+    .custom-content { padding: 60px 24px; }
+    .steps { grid-template-columns: 1fr; }
+    footer { flex-direction: column; padding: 24px; text-align: center; }
+    .modular-header { flex-direction: column; align-items: flex-start; }
+    .contacts { padding: 80px 24px; }
+  }
+
+  @media (max-width: 600px) {
+    .hero-btns { flex-direction: column; }
+    .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+    .contacts-links { flex-direction: column; gap: 20px; }
+    nav { padding: 16px 20px; }
+  }
+
+  /* Mobile menu */
+  .mobile-menu {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: var(--dark); flex-direction: column;
+    align-items: center; justify-content: center; gap: 36px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: var(--white); text-decoration: none; font-size: 22px;
+    font-family: var(--font-display); font-weight: 300;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--green-light); }
+  .close-btn {
+    position: absolute; top: 24px; right: 24px;
+    font-size: 28px; color: var(--white); cursor: pointer; background: none; border: none;
+  }
+
+  /* Divider line */
+  .line { width: 60px; height: 1px; background: var(--green); margin: 24px 0; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Capsule<span>Home</span></a>
+  <ul class="nav-links">
+    <li><a href="#why">Преимущества</a></li>
+    <li><a href="#modular">Модульные</a></li>
+    <li><a href="#capsule">Капсульные</a></li>
+    <li><a href="#process">Как купить</a></li>
+    <li><a href="#contacts">Контакты</a></li>
+  </ul>
+  <a href="https://wa.me/87023900631" class="nav-cta">Написать в WhatsApp</a>
+  <div class="burger" id="burger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-btn" onclick="toggleMenu()">✕</button>
+  <a href="#why" onclick="toggleMenu()">Преимущества</a>
+  <a href="#modular" onclick="toggleMenu()">Модульные дома</a>
+  <a href="#capsule" onclick="toggleMenu()">Капсульные дома</a>
+  <a href="#process" onclick="toggleMenu()">Как купить</a>
+  <a href="#contacts" onclick="toggleMenu()">Контакты</a>
+  <a href="https://wa.me/87023900631" style="color: #3d7a52; margin-top:12px;">Написать в WhatsApp →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Алматы и Казахстан</div>
+    <h1>Готовый модульный дом за <em>30–45 дней</em></h1>
+    <p>Полностью готовый дом с утеплением, санузлом, электрикой и чистовой отделкой. Доставка до Алматы включена. Монтаж за 1 день.</p>
+    <div class="hero-btns">
+      <a href="https://wa.me/87023900631?text=Здравствуйте! Хочу узнать о модульных домах." class="btn-primary">
+        <span class="wa-icon">💬</span> Написать в WhatsApp
+      </a>
+      <a href="#modular" class="btn-secondary">
+        Смотреть модели →
+      </a>
+    </div>
+  </div>
+  <div class="hero-scroll">Листайте вниз</div>
+</section>
+
+<!-- WHY -->
+<section class="why" id="why">
+  <div class="why-header reveal">
+    <div class="section-tag">Почему выбирают нас</div>
+    <h2>Дом без лишних<br>сложностей</h2>
+    <p>Мы берём на себя всё — от производства до монтажа. Вы просто въезжаете.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card reveal reveal-delay-1">
+      <div class="why-icon">🏠</div>
+      <h3>Полностью готовый дом</h3>
+      <p>Отделка, мебель, сантехника, электрика — всё включено. Заезжайте в день монтажа.</p>
+    </div>
+    <div class="why-card reveal reveal-delay-2">
+      <div class="why-icon">🚛</div>
+      <h3>Доставка до Алматы включена</h3>
+      <p>Никаких скрытых платежей. Цена, которую вы видите — это финальная цена.</p>
+    </div>
+    <div class="why-card reveal reveal-delay-3">
+      <div class="why-icon">⚡</div>
+      <h3>Монтаж за 1 день</h3>
+      <p>Наша команда устанавливает дом на вашем участке всего за один рабочий день.</p>
+    </div>
+    <div class="why-card reveal reveal-delay-1">
+      <div class="why-icon">📅</div>
+      <h3>Производство 30–45 дней</h3>
+      <p>Чёткие сроки, зафиксированные в договоре. Без задержек и неожиданностей.</p>
+    </div>
+    <div class="why-card reveal reveal-delay-2">
+      <div class="why-icon">❄️</div>
+      <h3>Круглогодичное проживание</h3>
+      <p>Качественное утепление и инженерные системы рассчитаны на казахстанские зимы.</p>
+    </div>
+    <div class="why-card reveal reveal-delay-3">
+      <div class="why-icon">✏️</div>
+      <h3>Индивидуальный проект</h3>
+      <p>Можем изготовить дом под ваши размеры, планировку и любые пожелания.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MODULAR -->
+<section class="modular" id="modular">
+  <div class="modular-header">
+    <div class="reveal">
+      <div class="section-tag">Модульные дома</div>
+      <h2>Выберите свою модель</h2>
+    </div>
+    <p class="reveal" style="color: var(--gray); max-width: 320px; font-size: 14px; line-height: 1.7;">
+      Доставка до Алматы включена в стоимость. Монтаж — 1 день.
+    </p>
+  </div>
+  <div class="modular-grid">
+    <!-- 28m2 -->
+    <div class="model-card reveal">
+      <img class="model-img" 
+           src="/images/28mod.png"
+           alt="Модульный дом 28 м²" loading="lazy">
+      <div class="model-body">
+        <div class="model-size">28 <span>м²</span></div>
+        <div class="model-price">5 600 000 ₸</div>
+        <div class="model-delivery">Доставка до Алматы <span>включена</span></div>
+        <ul class="model-features">
+          <li>Качественное утепление</li>
+          <li>Санузел и душевая кабина</li>
+          <li>Электрика и освещение</li>
+          <li>Сантехника под ключ</li>
+          <li>Внутренняя чистовая отделка</li>
+          <li>Готов к проживанию</li>
+        </ul>
+        <a href="https://wa.me/87023900631?text=Здравствуйте! Интересует модульный дом 28 м² за 5 600 000 ₸" class="btn-primary" style="width:100%; justify-content:center;">
+          💬 Получить консультацию
+        </a>
+      </div>
+    </div>
+    <!-- 48m2 -->
+    <div class="model-card reveal reveal-delay-2">
+      <img class="model-img" 
+           src="/images/48mod.png"
+           alt="Модульный дом 48 м²" loading="lazy">
+      <div class="model-body">
+        <div class="model-size">48 <span>м²</span></div>
+        <div class="model-price">9 600 000 ₸</div>
+        <div class="model-delivery">Доставка до Алматы <span>включена</span></div>
+        <ul class="model-features">
+          <li>Просторная открытая планировка</li>
+          <li>Полный санузел</li>
+          <li>Профессиональное утепление</li>
+          <li>Электрика и освещение</li>
+          <li>Чистовая отделка</li>
+          <li>Заезжай и живи</li>
+        </ul>
+        <a href="https://wa.me/87023900631?text=Здравствуйте! Интересует модульный дом 48 м² за 9 600 000 ₸" class="btn-primary" style="width:100%; justify-content:center;">
+          💬 Получить консультацию
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPSULE -->
+<section class="capsule" id="capsule">
+  <div class="capsule-header reveal">
+    <div class="section-tag">Капсульные дома</div>
+    <h2>Дизайнерские решения<br>премиум класса</h2>
+    <div class="line"></div>
+    <p style="color: var(--gray); font-size: 15px; line-height: 1.7; max-width: 480px;">
+      Современная архитектура, продуманный интерьер и максимальный комфорт. Полностью готовые к проживанию.
+    </p>
+  </div>
+  <div class="capsule-grid">
+    <div class="capsule-card reveal">
+      <img class="capsule-img"
+           src="/images/18.webp"
+           alt="Капсульный дом 18 м²" loading="lazy">
+      <div class="capsule-overlay">
+        <div class="capsule-label">Капсула · Compact</div>
+        <div class="capsule-name">18 м²</div>
+        <div class="capsule-price">26 000 $</div>
+        <div class="capsule-desc">Полностью готовый дом. Стильный минималистичный дизайн.</div>
+        <a href="https://wa.me/87023900631?text=Здравствуйте! Интересует капсульный дом 18 м² за 26 000 $" class="btn-primary" style="font-size:13px; padding: 12px 22px;">
+          💬 Рассчитать стоимость
+        </a>
+      </div>
+    </div>
+    <div class="capsule-card reveal reveal-delay-2">
+      <img class="capsule-img"
+           src="/images/28webp.webp"
+           alt="Капсульный дом 28 м²" loading="lazy">
+      <div class="capsule-overlay">
+        <div class="capsule-label">Капсула · Standard</div>
+        <div class="capsule-name">28 м²</div>
+        <div class="capsule-price">43 500 $</div>
+        <div class="capsule-desc">Полностью готовый, включая мебель. Максимальный комфорт.</div>
+        <a href="https://wa.me/87023900631?text=Здравствуйте! Интересует капсульный дом 28 м² за 43 500 $" class="btn-primary" style="font-size:13px; padding: 12px 22px;">
+          💬 Рассчитать стоимость
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOM -->
+<div class="custom reveal" id="custom">
+  <div class="custom-img"></div>
+  <div class="custom-content">
+    <div class="section-tag">Индивидуальный заказ</div>
+    <h2>Дом<br>под ваш запрос</h2>
+    <div class="line"></div>
+    <p>
+      Нестандартные размеры, уникальная планировка, особые пожелания по материалам или дизайну — мы изготовим именно то, что вам нужно. Каждый проект обсуждается индивидуально.
+    </p>
+    <a href="https://wa.me/87023900631?text=Здравствуйте! Хочу обсудить индивидуальный проект дома." class="btn-primary" style="align-self: flex-start;">
+      💬 Обсудить проект в WhatsApp
+    </a>
+  </div>
+</div>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="process-header reveal">
+    <div class="section-tag">Как проходит покупка</div>
+    <h2>Просто. Прозрачно.<br>Без лишних шагов.</h2>
+  </div>
+  <div class="steps">
+    <div class="step reveal reveal-delay-1">
+      <div class="step-num">01</div>
+      <h3>Пишете в WhatsApp</h3>
+      <p>Задайте любой вопрос — мы отвечаем быстро и без навязывания.</p>
+    </div>
+    <div class="step reveal reveal-delay-2">
+      <div class="step-num">02</div>
+      <h3>Фото участка</h3>
+      <p>Пришлите фото или адрес — мы оценим условия установки.</p>
+    </div>
+    <div class="step reveal reveal-delay-3">
+      <div class="step-num">03</div>
+      <h3>Выбор модели</h3>
+      <p>Подбираем подходящий вариант под ваш участок и бюджет.</p>
+    </div>
+    <div class="step reveal reveal-delay-4">
+      <div class="step-num">04</div>
+      <h3>Договор</h3>
+      <p>Фиксируем сроки, стоимость и все условия в официальном договоре.</p>
+    </div>
+    <div class="step reveal reveal-delay-4" style="background: var(--green);">
+      <div class="step-num" style="color: rgba(255,255,255,0.2);">05</div>
+      <h3>Установка дома</h3>
+      <p>Через 30–45 дней приезжаем и монтируем дом за 1 день. Готово!</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTS -->
+<section class="contacts" id="contacts">
+  <div class="reveal">
+    <div class="section-tag" style="justify-content: center;">Контакты</div>
+    <h2>Готовы ответить<br>на ваши вопросы</h2>
+    <p>Напишите нам прямо сейчас — мы проконсультируем бесплатно, подберём модель и расскажем всё о процессе.</p>
+    <a href="https://wa.me/87023900631?text=Здравствуйте! Хочу узнать о ваших домах." class="btn-primary" style="display: inline-flex; font-size: 16px; padding: 18px 40px; margin-bottom: 48px;">
+      💬 Написать в WhatsApp
+    </a>
+    <div class="contacts-links">
+      <a href="tel:87023900631" class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div style="font-size: 11px; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2px;">Телефон</div>
+          <div>8 702 390 0631</div>
+        </div>
+      </a>
+      <a href="https://wa.me/87023900631" class="contact-item">
+        <div class="contact-icon">💬</div>
+        <div>
+          <div style="font-size: 11px; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2px;">WhatsApp</div>
+          <div>8 702 390 0631</div>
+        </div>
+      </a>
+      <a href="https://instagram.com/capsulehome_almaty" class="contact-item" target="_blank">
+        <div class="contact-icon">📸</div>
+        <div>
+          <div style="font-size: 11px; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2px;">Instagram</div>
+          <div>@capsulehome_almaty</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2024 CapsuleHome Almaty. Все права защищены.</p>
+  <p>Алматы, Казахстан</p>
+  <a href="https://instagram.com/capsulehome_almaty" target="_blank">@capsulehome_almaty</a>
+</footer>
+
+<!-- STICKY WA -->
+<a href="https://wa.me/87023900631?text=Здравствуйте! Хочу узнать о ваших домах." class="sticky-wa" title="WhatsApp">
+  💬
+</a>
+
+<script>
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Mobile menu
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth anchor
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
